@@ -1,4 +1,5 @@
 import datetime
+import html
 import logging
 import os
 from pathlib import Path
@@ -13,6 +14,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import case, desc, func, or_
 
 from .database import engine, Base, get_db, SessionLocal
+from .email_service import send_email
 from .models import User, Company, Policy, Audit, Finding, Benchmark, AuditLog
 from .schemas import (
     CompletePasswordResetRequest, EmailVerificationResponse, PasswordResetOtpResponse,
@@ -1598,7 +1600,6 @@ def run_batch_research(request: List[str], db: Session = Depends(get_db), _curre
 
 # --- CONTACT FORM ---
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
 CONTACT_ADMIN_EMAIL = os.getenv("CONTACT_ADMIN_EMAIL", "").strip()
 CONTACT_FROM_EMAIL = os.getenv("CONTACT_FROM_EMAIL", "").strip()
 CONTACT_RATE_LIMIT_COUNT = 5
@@ -1630,7 +1631,7 @@ def check_contact_rate_limit(request: Request) -> None:
 @app.post("/api/contact", response_model=ContactResponse)
 def submit_contact_form(request: ContactRequest, http_request: Request):
     """Accept a contact message only when the support notification is delivered."""
-    if not RESEND_API_KEY or not CONTACT_ADMIN_EMAIL or not CONTACT_FROM_EMAIL:
+    if not CONTACT_ADMIN_EMAIL or not CONTACT_FROM_EMAIL:
         logger.error("Contact email service is not configured.")
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -1648,21 +1649,25 @@ def submit_contact_form(request: ContactRequest, http_request: Request):
         f"---\n"
         f"{request.message}"
     )
-
-    import resend
-    resend.api_key = RESEND_API_KEY
+    body_html = (
+        f"<p><strong>Name:</strong> {html.escape(request.name)}</p>"
+        f"<p><strong>Email:</strong> {html.escape(str(request.email))}</p>"
+        f"<p><strong>Topic:</strong> {html.escape(topic_label)}</p>"
+        f"<hr>"
+        f"<p>{html.escape(request.message).replace(chr(10), '<br>')}</p>"
+    )
 
     try:
-        admin_delivery = resend.Emails.send({
-            "from": CONTACT_FROM_EMAIL,
-            "to": [CONTACT_ADMIN_EMAIL],
-            "reply_to": str(request.email),
-            "subject": subject,
-            "text": body_text,
-        })
-        submission_id = admin_delivery.get("id") if admin_delivery else None
-        if not submission_id:
-            raise RuntimeError("Email provider did not return a submission identifier.")
+        admin_delivery = send_email(
+            to=CONTACT_ADMIN_EMAIL,
+            subject=subject,
+            html=body_html,
+            text=body_text,
+            from_address=CONTACT_FROM_EMAIL,
+            reply_to=str(request.email),
+        )
+        if not admin_delivery:
+            raise RuntimeError("Email provider rejected contact admin delivery.")
     except Exception as exc:
         logger.error("Contact admin delivery failed (error_type=%s).", type(exc).__name__)
         raise HTTPException(
@@ -1672,22 +1677,23 @@ def submit_contact_form(request: ContactRequest, http_request: Request):
 
     try:
         acknowledgement = render_contact_acknowledgement_email(request.name)
-        resend.Emails.send({
-            "from": CONTACT_FROM_EMAIL,
-            "to": [str(request.email)],
-            "subject": acknowledgement.subject,
-            "text": acknowledgement.text,
-            "html": acknowledgement.html,
-        })
+        sent = send_email(
+            to=str(request.email),
+            subject=acknowledgement.subject,
+            html=acknowledgement.html,
+            text=acknowledgement.text,
+            from_address=CONTACT_FROM_EMAIL,
+        )
+        if not sent:
+            raise RuntimeError("Email provider rejected contact acknowledgement delivery.")
     except Exception as exc:
         logger.warning(
             "Contact acknowledgment delivery failed after admin acceptance "
-            "(submission_id=%s, error_type=%s).",
-            submission_id,
+            "(error_type=%s).",
             type(exc).__name__,
         )
 
-    logger.info("Contact admin notification accepted (submission_id=%s).", submission_id)
+    logger.info("Contact admin notification accepted for %s.", CONTACT_ADMIN_EMAIL)
 
     return ContactResponse(
         success=True,

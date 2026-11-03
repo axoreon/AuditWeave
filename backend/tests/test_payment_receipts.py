@@ -22,7 +22,7 @@ from app import main as main_module
 from app.main import create_payment_order, download_payment_receipt, get_payment_history, verify_payment
 from app.models import Base, CreditTransaction, PaymentOrder, PaymentReceipt, User
 from app.schemas import CreateOrderRequest, VerifyPaymentRequest
-from app.services.receipt_email import ResendReceiptEmailSender, deliver_receipt_email
+from app.services.receipt_email import SmtpReceiptEmailSender, deliver_receipt_email
 from app.services.receipt_pdf import generate_receipt_pdf
 
 
@@ -174,14 +174,16 @@ def test_email_failure_does_not_rollback_payment_or_expose_provider_error(db, us
     assert "provider-secret-detail" not in receipt.last_email_error
 
 
-def test_resend_message_uses_registered_recipient_and_pdf_attachment(monkeypatch):
-    import base64
-    import resend
+def test_smtp_message_uses_registered_recipient_and_pdf_attachment(monkeypatch):
 
     sent = []
-    monkeypatch.setenv("RESEND_API_KEY", "test-key-not-real")
     monkeypatch.setenv("RECEIPT_EMAIL_FROM", "AuditWeave <receipts@example.com>")
-    monkeypatch.setattr(resend.Emails, "send", lambda payload: sent.append(payload))
+
+    def send_email_stub(**payload):
+        sent.append(payload)
+        return True
+
+    monkeypatch.setattr("app.services.receipt_email.send_email", send_email_stub)
     receipt = PaymentReceipt(
         receipt_number="AW-RCP-2026-EMAIL",
         plan_id="pro",
@@ -198,11 +200,11 @@ def test_resend_message_uses_registered_recipient_and_pdf_attachment(monkeypatch
     )
     pdf_bytes = generate_receipt_pdf(receipt)
 
-    ResendReceiptEmailSender().send(receipt, pdf_bytes)
+    SmtpReceiptEmailSender().send(receipt, pdf_bytes)
 
     assert len(sent) == 1
     message = sent[0]
-    assert message["to"] == ["registered@example.com"]
+    assert message["to"] == "registered@example.com"
     assert message["subject"] == "AuditWeave Payment Receipt — AW-RCP-2026-EMAIL"
     assert "Plan: Pro Pack" in message["text"]
     assert "Credits: 20" in message["text"]
@@ -212,8 +214,10 @@ def test_resend_message_uses_registered_recipient_and_pdf_attachment(monkeypatch
     assert "20" in message["html"]
     assert "₹350" in message["html"]
     assert "Powered by Axoreon" in message["html"]
-    assert message["attachments"][0]["filename"] == "AuditWeave-Receipt-AW-RCP-2026-EMAIL.pdf"
-    assert base64.b64decode(message["attachments"][0]["content"]) == pdf_bytes
+    attachment_name, attachment_content, attachment_type = message["attachments"][0]
+    assert attachment_name == "AuditWeave-Receipt-AW-RCP-2026-EMAIL.pdf"
+    assert attachment_content == pdf_bytes
+    assert attachment_type == "application/pdf"
 
 
 @pytest.mark.parametrize(("amount_paise", "amount_text"), [(10000, "₹100"), (35000, "₹350"), (150000, "₹1,500")])

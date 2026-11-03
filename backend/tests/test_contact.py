@@ -4,7 +4,6 @@ import os
 import sys
 
 import pytest
-import resend
 from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -23,7 +22,6 @@ VALID_CONTACT = {
 @pytest.fixture(autouse=True)
 def configured_contact_service(monkeypatch):
     main_module.contact_rate_limits.clear()
-    monkeypatch.setattr(main_module, "RESEND_API_KEY", "re_test_key")
     monkeypatch.setattr(main_module, "CONTACT_ADMIN_EMAIL", "support@example.com")
     monkeypatch.setattr(main_module, "CONTACT_FROM_EMAIL", "AuditWeave <noreply@example.com>")
     yield
@@ -33,11 +31,11 @@ def configured_contact_service(monkeypatch):
 def test_anonymous_valid_contact_is_accepted_and_normalized(monkeypatch):
     deliveries = []
 
-    def send(params):
+    def send_email_stub(**params):
         deliveries.append(params)
-        return {"id": f"email-{len(deliveries)}"}
+        return True
 
-    monkeypatch.setattr(resend.Emails, "send", staticmethod(send))
+    monkeypatch.setattr(main_module, "send_email", send_email_stub)
 
     response = TestClient(main_module.app).post(
         "/api/contact",
@@ -53,10 +51,10 @@ def test_anonymous_valid_contact_is_accepted_and_normalized(monkeypatch):
     assert response.json()["success"] is True
     assert "sent" in response.json()["message"].lower()
     assert len(deliveries) == 2
-    assert deliveries[0]["to"] == ["support@example.com"]
+    assert deliveries[0]["to"] == "support@example.com"
     assert deliveries[0]["reply_to"] == "priya@example.com"
     assert "Priya Sharma" in deliveries[0]["subject"]
-    assert "html" not in deliveries[0]
+    assert "html" in deliveries[0]
     assert "text" in deliveries[1] and "html" in deliveries[1]
     assert "12 business hours" in deliveries[1]["text"]
     assert "12 business hours" in deliveries[1]["html"]
@@ -90,11 +88,11 @@ def test_invalid_contact_payloads_return_422(overrides, field):
 def test_other_topic_is_required_and_included_in_admin_email(monkeypatch):
     deliveries = []
 
-    def send(params):
+    def send_email_stub(**params):
         deliveries.append(params)
-        return {"id": f"email-{len(deliveries)}"}
+        return True
 
-    monkeypatch.setattr(resend.Emails, "send", staticmethod(send))
+    monkeypatch.setattr(main_module, "send_email", send_email_stub)
 
     missing_response = TestClient(main_module.app).post(
         "/api/contact",
@@ -131,7 +129,7 @@ def test_other_topic_rejects_oversized_description():
 
 
 def test_missing_provider_configuration_returns_safe_503(monkeypatch):
-    monkeypatch.setattr(main_module, "RESEND_API_KEY", "")
+    monkeypatch.setattr(main_module, "CONTACT_ADMIN_EMAIL", "")
 
     response = TestClient(main_module.app).post("/api/contact", json=VALID_CONTACT)
 
@@ -142,10 +140,10 @@ def test_missing_provider_configuration_returns_safe_503(monkeypatch):
 
 
 def test_admin_delivery_failure_returns_safe_503(monkeypatch):
-    def fail_send(_params):
-        raise RuntimeError("provider-secret-detail")
+    def fail_send_email(**_params):
+        return False
 
-    monkeypatch.setattr(resend.Emails, "send", staticmethod(fail_send))
+    monkeypatch.setattr(main_module, "send_email", fail_send_email)
 
     response = TestClient(main_module.app).post("/api/contact", json=VALID_CONTACT)
 
@@ -157,14 +155,14 @@ def test_admin_delivery_failure_returns_safe_503(monkeypatch):
 def test_acknowledgment_failure_after_admin_acceptance_returns_success(monkeypatch):
     calls = 0
 
-    def send(_params):
+    def send_email_stub(**_params):
         nonlocal calls
         calls += 1
         if calls == 1:
-            return {"id": "admin-accepted"}
-        raise RuntimeError("ack-provider-detail")
+            return True
+        return False
 
-    monkeypatch.setattr(resend.Emails, "send", staticmethod(send))
+    monkeypatch.setattr(main_module, "send_email", send_email_stub)
 
     response = TestClient(main_module.app).post("/api/contact", json=VALID_CONTACT)
 
@@ -176,11 +174,7 @@ def test_acknowledgment_failure_after_admin_acceptance_returns_success(monkeypat
 
 def test_contact_rate_limit_returns_429(monkeypatch):
     monkeypatch.setattr(main_module, "CONTACT_RATE_LIMIT_COUNT", 2)
-    monkeypatch.setattr(
-        resend.Emails,
-        "send",
-        staticmethod(lambda _params: {"id": "accepted"}),
-    )
+    monkeypatch.setattr(main_module, "send_email", lambda **_params: True)
     client = TestClient(main_module.app)
 
     assert client.post("/api/contact", json=VALID_CONTACT).status_code == 200

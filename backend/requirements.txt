@@ -65,7 +65,6 @@ uritemplate==4.2.0
 urllib3==2.7.0
 uvicorn==0.52.4
 
-resend==2.1.0
 razorpay==1.4.1
 
 setuptools<81

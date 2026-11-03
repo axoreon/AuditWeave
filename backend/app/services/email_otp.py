@@ -13,11 +13,10 @@ import hashlib
 import logging
 import os
 import secrets
-import smtplib
-import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from ..email_service import send_email
 from .email_templates import (
     render_account_verified_email,
     render_password_reset_email,
@@ -163,34 +162,40 @@ def _send_security_email(to_email: str, msg_builder) -> None:
     try:
         msg = msg_builder(cfg)
 
-        ctx = ssl.create_default_context()
+        plain_text = None
+        html_text = None
+        payload = msg.get_payload()
+        if isinstance(payload, list):
+            for part in payload:
+                charset = part.get_content_charset() or "utf-8"
+                decoded = part.get_payload(decode=True)
+                if decoded is None:
+                    continue
+                text_value = decoded.decode(charset)
+                if part.get_content_type() == "text/plain":
+                    plain_text = text_value
+                elif part.get_content_type() == "text/html":
+                    html_text = text_value
 
-        if cfg["port"] == 465:
-            # Implicit TLS (SMTPS)
-            with smtplib.SMTP_SSL(cfg["host"], cfg["port"], context=ctx) as server:
-                server.login(cfg["username"], cfg["password"])
-                server.sendmail(cfg["from_email"], [to_email], msg.as_bytes())
-        else:
-            # STARTTLS (587 / 25)
-            with smtplib.SMTP(cfg["host"], cfg["port"]) as server:
-                server.ehlo()
-                if cfg["use_tls"]:
-                    server.starttls(context=ctx)
-                    server.ehlo()
-                server.login(cfg["username"], cfg["password"])
-                server.sendmail(cfg["from_email"], [to_email], msg.as_bytes())
+        if not html_text:
+            raise SmtpDeliveryError("Email content is missing HTML body.")
+
+        sent = send_email(
+            to=to_email,
+            subject=str(msg.get("Subject", "")),
+            html=html_text,
+            text=plain_text,
+            from_address=str(msg.get("From", "")),
+        )
+        if not sent:
+            raise SmtpDeliveryError("Email delivery failed. Please try again later.")
 
         logger.info("Security email sent to %s", _mask_email(to_email))
-
-    except smtplib.SMTPAuthenticationError:
-        logger.error("SMTP authentication failed for host %s", cfg.get("host"))
-        raise SmtpDeliveryError("Email delivery failed (auth). Check SMTP credentials.") from None
-    except smtplib.SMTPException as exc:
+    except SmtpDeliveryError:
+        raise
+    except Exception as exc:
         logger.error("SMTP error sending OTP email: %s", type(exc).__name__)
         raise SmtpDeliveryError("Email delivery failed. Please try again later.") from exc
-    except OSError as exc:
-        logger.error("Network error connecting to SMTP host: %s", type(exc).__name__)
-        raise SmtpDeliveryError("Unable to reach email server. Please try again later.") from exc
 
 
 def send_verification_otp(to_email: str, first_name: str, otp: str) -> None:
