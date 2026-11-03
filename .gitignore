@@ -1,0 +1,55 @@
+# ===========================
+# Environment Variables
+# ===========================
+.env
+.env.*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# ===========================
+# Python
+# ===========================
+venv/
+.venv/
+backend/venv/
+backend/.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+*.pyd
+
+# ===========================
+# Database
+# ===========================
+AuditWeave.db
+*.db
+*.sqlite3
+
+# ===========================
+# Node.js
+# ===========================
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+dist/
+build/
+
+# ===========================
+# IDE
+# ===========================
+.vscode/
+.idea/
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+
+# ===========================
+# Logs
+# ===========================
+*.log
