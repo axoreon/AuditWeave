@@ -7,6 +7,7 @@ const PUBLIC_PATHS = new Set([
   "/reset-password",
   "/pricing",
   "/contact",
+  "/docs",
   "/docs/privacy",
   "/docs/terms",
 ]);
@@ -20,6 +21,7 @@ const APP_SHELL_HIDDEN_PATHS = new Set([
   "/reset-password",
   "/pricing",
   "/contact",
+  "/docs",
   "/docs/privacy",
   "/docs/terms",
 ]);
