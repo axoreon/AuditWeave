@@ -9,10 +9,14 @@ import {
   Loader2,
   RefreshCw,
   Sparkles,
+  Tag,
 } from "lucide-react";
 
-import { getCreditPlans, getErrorMessage, isAuthenticated } from "@/lib/api";
-import type { CreditPlan } from "@/lib/api";
+import { getCreditPlans, getErrorMessage, getOfferDetails, isAuthenticated } from "@/lib/api";
+import type { CreditPlan, OfferDetailsResponse } from "@/lib/api";
+import { calculateDiscountedPrice, clearActiveOffer, resolveActiveOfferId } from "@/lib/offer";
+import { OfferBanner } from "../components/OfferBanner";
+import { CouponInput } from "../components/CouponInput";
 import { PublicNavbar } from "../components/PublicNavbar";
 
 const BILLING_PATH = "/account/billing";
@@ -24,6 +28,29 @@ export default function PublicPricingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [requestVersion, setRequestVersion] = useState(0);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  const [offerDetails, setOfferDetails] = useState<OfferDetailsResponse | null>(null);
+
+  useEffect(() => {
+    const offerId = resolveActiveOfferId();
+    if (!offerId) return;
+    setActiveOfferId(offerId);
+
+    let cancelled = false;
+    void getOfferDetails(offerId)
+      .then((details) => {
+        if (!cancelled && details.active) {
+          setOfferDetails(details);
+        }
+      })
+      .catch((reason: unknown) => {
+        console.warn("Public pricing offer lookup notice:", reason);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,7 +72,11 @@ export default function PublicPricingPage() {
   }, [requestVersion]);
 
   const continueWithPlan = () => {
-    router.push(isAuthenticated() ? BILLING_PATH : LOGIN_FOR_BILLING);
+    const targetBillingPath = activeOfferId
+      ? `${BILLING_PATH}?offer_id=${encodeURIComponent(activeOfferId)}`
+      : BILLING_PATH;
+    const targetLoginPath = `/login?returnTo=${encodeURIComponent(targetBillingPath)}`;
+    router.push(isAuthenticated() ? targetBillingPath : targetLoginPath);
   };
 
   return (
@@ -85,6 +116,25 @@ export default function PublicPricingPage() {
         </section>
 
         <section className="mx-auto w-full max-w-7xl px-5 pb-16 sm:px-6 lg:pb-20">
+          <OfferBanner
+            offer={offerDetails}
+            onDismiss={() => {
+              clearActiveOffer();
+              setActiveOfferId(null);
+              setOfferDetails(null);
+            }}
+          />
+          <CouponInput
+            activeOffer={offerDetails}
+            onOfferApplied={(details) => {
+              setActiveOfferId(details.id);
+              setOfferDetails(details);
+            }}
+            onOfferRemoved={() => {
+              setActiveOfferId(null);
+              setOfferDetails(null);
+            }}
+          />
           {error && (
             <div className="mx-auto mb-8 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-center text-sm font-semibold text-red-700 sm:flex-row sm:text-left">
               <span className="flex-1">{error}</span>
@@ -134,13 +184,29 @@ export default function PublicPricingPage() {
                   <p className="mt-2 min-h-10 text-xs font-medium leading-[1.15rem] text-brand-deep/60">
                     {plan.description}
                   </p>
-                  <div className="my-4 flex items-end gap-1">
-                    <IndianRupee className="mb-1 h-6 w-6" />
-                    <span className="text-3xl font-black">{plan.price_inr}</span>
-                    <span className="mb-1 text-xs font-bold text-brand-deep/45">
-                      one-time
-                    </span>
-                  </div>
+                  {(() => {
+                    const { discountedPrice, savings } = calculateDiscountedPrice(plan.price_inr, offerDetails);
+                    return (
+                      <div className="my-4">
+                        <div className="flex items-end gap-1">
+                          <IndianRupee className="mb-1 h-6 w-6" />
+                          <span className="text-3xl font-black">{savings > 0 ? discountedPrice : plan.price_inr}</span>
+                          <span className="mb-1 text-xs font-bold text-brand-deep/45">one-time</span>
+                          {savings > 0 && (
+                            <span className="mb-1 ml-2 text-xs font-semibold text-brand-deep/40 line-through">
+                              ₹{plan.price_inr}
+                            </span>
+                          )}
+                        </div>
+                        {savings > 0 && (
+                          <div className="mt-1 inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800">
+                            <Tag className="h-3 w-3" />
+                            <span>{offerDetails?.percent_off ? `${offerDetails.percent_off}% OFF Applied` : "Offer Applied"}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                   <ul className="mb-5 flex-1 space-y-2.5">
                     {plan.features.map((feature) => (
                       <li
