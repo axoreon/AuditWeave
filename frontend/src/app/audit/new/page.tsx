@@ -58,7 +58,7 @@ export default function NewAuditPage() {
     { label: "Cleaning Document Layout", desc: "Removing headers, footers, and menu links" },
     { label: "Detecting Legal Clauses", desc: "Splitting sections and identifying paragraphs" },
     { label: "Running Deterministic Rule Engine", desc: "Evaluating mandatory contact and officer rules" },
-    { label: "Invoking Gemini AI Analysis", desc: "Interpreting qualitative legal language and liability" },
+    { label: "Invoking AI Legal Analysis", desc: "Interpreting qualitative legal language and liability" },
     { label: "Risk Severity Scoring", desc: "Generating vulnerability ratings and penalty estimates" },
     { label: "Saving Audit Results", desc: "Persisting findings and finalizing credit usage" }
   ];

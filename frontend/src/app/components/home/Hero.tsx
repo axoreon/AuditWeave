@@ -274,7 +274,7 @@ export function Hero() {
               <div>
                 <p className="text-[13px] font-bold text-white">Hybrid Intelligence Engine</p>
                 <p className="mt-1 text-[12px] leading-relaxed text-slate-400">
-                  Deterministic rule checks + Google Gemini AI reasoning for explainable, auditable compliance verdicts.
+                  Deterministic rule checks + advanced AI reasoning for explainable, auditable compliance verdicts.
                 </p>
               </div>
             </div>

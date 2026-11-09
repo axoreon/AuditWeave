@@ -752,7 +752,7 @@ function AuditEngineDoc() {
           <div className="border-l-4 p-4 rounded" style={{ borderColor: "#276152", backgroundColor: "#EEF5F2" }}>
             <h4 className="font-semibold mb-2" style={{ color: "#276152" }}>3. AI Legal Analysis</h4>
             <p className="text-sm" style={{ color: "#666" }}>
-              Google Gemini AI performs contextual legal reasoning with 96% confidence scoring.
+              Advanced AI performs contextual legal reasoning with 96% confidence scoring.
             </p>
           </div>
 

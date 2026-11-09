@@ -18,10 +18,10 @@ const footerLinks = {
     { label: "Press Kit", href: "/press" }
   ],
   legal: [
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
-    { label: "Security", href: "/security" },
-    { label: "Compliance", href: "/compliance" }
+    { label: "Privacy Policy", href: "/docs/privacy" },
+    { label: "Terms of Service", href: "/docs/terms" },
+    { label: "Security", href: "/docs/security" },
+    { label: "Compliance", href: "/docs" }
   ],
   resources: [
     { label: "Blog", href: "/blog" },

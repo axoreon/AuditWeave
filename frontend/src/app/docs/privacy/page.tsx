@@ -167,6 +167,13 @@ export default function PrivacyPage() {
             <p className="mb-6" style={{ color: "#666" }}>
               Personal data is processed strictly for specified, lawful purposes backed by appropriate legal grounds under Section 4 and Section 7 of the DPDP Act.
             </p>
+
+            <div className="mb-6 p-5 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-bold mb-2" style={{ color: "#276152" }}>Cross-Border Transfer Framework</p>
+              <p style={{ color: "#666" }}>
+                We will address cross-border transfer through a documented process that clearly describes the personal data involved, the specified purpose, the applicable user choices, and the method for exercising relevant rights. Required organization-specific details will be published at <a href="mailto:dpo@axoreon.com" className="font-semibold hover:underline" style={{ color: "#276152" }}>dpo@axoreon.com</a> upon request.
+              </p>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
@@ -251,6 +258,35 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
               5. Your Data Rights
             </h2>
+
+            <div className="mb-6 p-5 rounded-lg border-2" style={{ borderColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-bold mb-3" style={{ color: "#276152" }}>Pre-Consent Notice</p>
+              <p className="mb-3" style={{ color: "#666" }}>
+                Before requesting consent, we will provide a clear notice identifying the personal data to be processed and each specified purpose of processing. The notice will also explain how to:
+              </p>
+              <ul className="space-y-2 ml-4">
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>Withdraw consent at any time</p>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>Exercise data principal rights (access, correction, erasure)</p>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>Raise a grievance with our Data Protection Officer</p>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>File a complaint with the Data Protection Board of India</p>
+                </li>
+              </ul>
+              <p className="mt-3 text-sm" style={{ color: "#666" }}>
+                The relevant access method is available at <a href="mailto:dpo@axoreon.com" className="font-semibold hover:underline" style={{ color: "#276152" }}>dpo@axoreon.com</a>
+              </p>
+            </div>
+
             <p className="mb-6" style={{ color: "#666" }}>
               Under Chapter III of the DPDP Act (Sections 11–14), you possess the following enforceable statutory rights:
             </p>
@@ -354,7 +390,7 @@ export default function PrivacyPage() {
               8. Information Security & Technical Safeguards
             </h2>
             <p className="mb-6" style={{ color: "#666" }}>
-              We implement comprehensive technical and organizational safeguards to protect your personal data:
+              We use reasonable security safeguards appropriate to the nature and risk of the personal data we process, including encryption, access controls, backup mechanisms, and continuous monitoring. If a personal-data breach occurs, we will follow the notification and response requirements that apply to the incident under Section 8(6) of the DPDP Act, 2023.
             </p>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
@@ -402,6 +438,13 @@ export default function PrivacyPage() {
                   </p>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-6 p-5 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-bold mb-2" style={{ color: "#276152" }}>Data Breach Notification</p>
+              <p style={{ color: "#666" }}>
+                In the event of a personal data breach that is likely to cause harm to data principals, we will notify the Data Protection Board of India and affected individuals in accordance with Section 8(6) of the DPDP Act and Rule 7 of the DPDP Rules, 2025, within the prescribed timeline.
+              </p>
             </div>
           </motion.section>
 

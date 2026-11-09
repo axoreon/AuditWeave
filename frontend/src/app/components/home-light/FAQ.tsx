@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     question: "How accurate is the AI legal reasoning?",
-    answer: "AuditWeave uses Google Gemini AI with 96% confidence scoring for legal justifications. Every finding includes explainable reasoning mapped to specific DPDP Act 2023 sections with citation references for legal review."
+    answer: "AuditWeave uses advanced AI analysis with 96% confidence scoring for legal justifications. Every finding includes explainable reasoning mapped to specific DPDP Act 2023 sections with citation references for legal review."
   },
   {
     question: "What compliance pillars does AuditWeave check?",

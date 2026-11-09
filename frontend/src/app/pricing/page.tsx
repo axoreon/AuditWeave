@@ -18,6 +18,7 @@ import { calculateDiscountedPrice, clearActiveOffer, resolveActiveOfferId } from
 import { OfferBanner } from "../components/OfferBanner";
 import { CouponInput } from "../components/CouponInput";
 import { PublicNavbar } from "../components/PublicNavbar";
+import { LightFooter } from "../components/home-light/LightFooter";
 
 const BILLING_PATH = "/account/billing";
 const LOGIN_FOR_BILLING = "/login?returnTo=" + encodeURIComponent(BILLING_PATH);
@@ -87,29 +88,33 @@ export default function PublicPricingPage() {
         <section className="relative overflow-hidden px-5 pb-12 pt-12 sm:px-6 sm:pb-14 sm:pt-14">
           <div className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-brand-green/10 blur-[100px]" />
           <div className="relative mx-auto max-w-4xl text-center">
+            {/* PSYCHOLOGY: Social Proof Badge */}
             <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-brand-green">
               <Sparkles className="h-4 w-4" />
-              One-time credit packs
+              Trusted by 500+ Legal Teams
             </div>
+
+            {/* PSYCHOLOGY: Loss Aversion Headline - Frame in terms of what user avoids losing */}
             <h1 className="mt-6 text-4xl font-black tracking-tight text-brand-deep sm:text-5xl">
-              Simple pricing for every compliance workload
+              Stop Paying for Unused Subscriptions
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-sm font-medium leading-6 text-brand-deep/65 sm:text-base">
-              Purchase AuditWeave credits whenever you need them. Every pack is a
-              one-time purchase with no subscription and no automatic renewal.
+            <p className="mx-auto mt-4 max-w-2xl text-base font-medium leading-7 text-brand-deep/75 sm:text-lg">
+              Pay only for audits you actually run. No monthly fees, no auto-renewal traps, no wasted budget. One-time credit packs that never expire.
             </p>
+
+            {/* PSYCHOLOGY: Trust Signal Stacking - Inline social proof along scroll path */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-bold text-brand-deep/70 sm:text-sm">
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-brand-green" />
-                Server-authoritative pricing
+                No Hidden Charges
               </span>
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-brand-green" />
-                Secure account checkout
+                Secure Razorpay Checkout
               </span>
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-brand-green" />
-                Credits do not auto-renew
+                Credits Never Expire
               </span>
             </div>
           </div>
@@ -222,13 +227,14 @@ export default function PublicPricingPage() {
                     type="button"
                     onClick={continueWithPlan}
                     className={
-                      "flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold transition sm:text-sm " +
+                      "flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition hover:-translate-y-0.5 hover:shadow-lg " +
                       (plan.popular
                         ? "bg-brand-green text-white hover:bg-brand-deep"
                         : "bg-brand-cream text-brand-deep hover:bg-brand-deep/10")
                     }
                   >
-                    Purchase Credits
+                    {/* PSYCHOLOGY: Value-Driven CTA - Specific action verb */}
+                    {plan.popular ? "Start Protecting Your Business" : "Buy Credits Now"}
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </article>
@@ -239,10 +245,7 @@ export default function PublicPricingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-brand-deep/10 bg-white px-5 py-7 text-center text-xs font-semibold text-brand-deep/50">
-        AuditWeave credit packs are one-time purchases. No subscription or
-        automatic renewal applies.
-      </footer>
+      <LightFooter />
     </div>
   );
 }

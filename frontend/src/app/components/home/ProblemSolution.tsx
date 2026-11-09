@@ -33,7 +33,7 @@ const solutions = [
   {
     icon: CheckCircle2,
     label: "Explainable AI Reasoning",
-    description: "Google Gemini AI provides human-readable legal justifications with confidence scoring."
+    description: "Advanced AI provides human-readable legal justifications with confidence scoring."
   },
   {
     icon: CheckCircle2,

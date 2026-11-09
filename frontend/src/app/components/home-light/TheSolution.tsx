@@ -17,7 +17,7 @@ const benefits = [
   {
     icon: CheckCircle2,
     title: "96% Accuracy",
-    description: "Google Gemini AI with explainable legal reasoning and DPDP Act citations"
+    description: "Advanced AI analysis with explainable legal reasoning and DPDP Act citations"
   }
 ];
 
