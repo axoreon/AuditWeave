@@ -9,19 +9,23 @@ import { AxoreonProducts } from "./components/home-light/AxoreonProducts";
 import { FAQ } from "./components/home-light/FAQ";
 import { FinalCTA } from "./components/home-light/FinalCTA";
 import { LightFooter } from "./components/home-light/LightFooter";
+import { JsonLd } from "./components/JsonLd";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
-      <LightNavbar />
-      <LightHero />
-      <TheProblem />
-      <TheSolution />
-      <HowItWorks />
-      <AxoreonProducts />
-      <FAQ />
-      <FinalCTA />
-      <LightFooter />
-    </div>
+    <>
+      <JsonLd />
+      <div className="min-h-screen bg-white">
+        <LightNavbar />
+        <LightHero />
+        <TheProblem />
+        <TheSolution />
+        <HowItWorks />
+        <AxoreonProducts />
+        <FAQ />
+        <FinalCTA />
+        <LightFooter />
+      </div>
+    </>
   );
 }

@@ -110,8 +110,46 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>AuditWeave | Powered by Axoreon</title>
-        <meta name="description" content="AuditWeave — AI-powered DPDP Act 2023 compliance auditing platform by Axoreon. Automate privacy policy audits, consent management, and regulatory compliance." />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Primary Meta Tags */}
+        <title>AuditWeave - DPDP Act 2023 Compliance Auditing | Stop Risking ₹250 Cr Penalties</title>
+        <meta name="title" content="AuditWeave - DPDP Act 2023 Compliance Auditing | Stop Risking ₹250 Cr Penalties" />
+        <meta name="description" content="Automated DPDP Act 2023 compliance auditing platform. Scan privacy policies in under 15 seconds with AI legal reasoning. Avoid ₹250 Cr penalties. Trusted by 500+ legal teams." />
+        <meta name="keywords" content="DPDP Act 2023, Digital Personal Data Protection Act, privacy policy audit, compliance auditing, India data protection, DPDP compliance, privacy policy scanner, legal compliance tool, AI compliance audit, automated compliance" />
+        <meta name="author" content="Axoreon" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://auditweave.axoreon.com" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://auditweave.axoreon.com" />
+        <meta property="og:title" content="AuditWeave - Stop Risking ₹250 Crore DPDP Act Penalties" />
+        <meta property="og:description" content="Automated privacy policy auditing platform for DPDP Act 2023 compliance. Scan in 15 seconds, avoid penalties, get executive-ready reports. Trusted by 500+ legal teams." />
+        <meta property="og:image" content="https://auditweave.axoreon.com/og-image.png" />
+        <meta property="og:site_name" content="AuditWeave" />
+        <meta property="og:locale" content="en_IN" />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://auditweave.axoreon.com" />
+        <meta property="twitter:title" content="AuditWeave - DPDP Act 2023 Compliance Auditing" />
+        <meta property="twitter:description" content="Automated privacy policy auditing in under 15 seconds. AI legal reasoning + deterministic rule engine. Avoid ₹250 Cr penalties." />
+        <meta property="twitter:image" content="https://auditweave.axoreon.com/twitter-image.png" />
+        <meta property="twitter:creator" content="@axoreon" />
+
+        {/* Favicons */}
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+        {/* Theme Color */}
+        <meta name="theme-color" content="#276152" />
+
+        {/* Additional SEO */}
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="geo.region" content="IN" />
+        <meta name="geo.placename" content="India" />
       </head>
       <body className="min-h-screen bg-brand-cream text-brand-deep antialiased">
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
