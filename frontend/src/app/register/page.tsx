@@ -101,16 +101,17 @@ export default function RegisterPage() {
 
           <div className="auth-card flex flex-col justify-center rounded-[28px] p-6 sm:p-8 [@media(max-height:800px)]:p-6">
             
-            {/* Header */}
+            {/* Header - PSYCHOLOGY: Loss Aversion + Social Proof + 5-Second Clarity */}
             <div className="mb-6">
               <div className="auth-kicker mb-4 inline-flex items-center space-x-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-3.5 py-1.5">
-                <span className="text-[10px] font-extrabold text-brand-green uppercase tracking-widest">AuditWeave Platform</span>
+                <Shield className="h-3 w-3 text-brand-green" />
+                <span className="text-[10px] font-extrabold text-brand-green uppercase tracking-widest">Trusted by 500+ Legal Teams</span>
               </div>
-              <h2 className="text-[2.25rem] font-extrabold text-brand-deep tracking-tight leading-tight mb-1">
-                Create account
+              <h2 className="text-[2.25rem] font-extrabold text-brand-deep tracking-tight leading-tight mb-2">
+                Stop Risking Compliance Penalties
               </h2>
-              <p className="text-[13px] text-brand-deep/60 font-medium">
-                Join to automate DPDP 2023 compliance, data governance, and AI audits.
+              <p className="text-[14px] text-brand-deep/70 font-medium leading-relaxed">
+                Start your free 2-audit trial and protect your business from ₹250 Cr DPDP Act violations in under 15 seconds.
               </p>
             </div>
 
@@ -274,7 +275,7 @@ export default function RegisterPage() {
                 type="submit"
                 disabled={loading || !isFormValid}
                 aria-busy={loading}
-                className="auth-primary-button mt-4 flex h-[54px] w-full items-center justify-center space-x-2.5 rounded-xl bg-brand-green text-[15px] font-bold text-white transition-all duration-300 hover:-translate-y-[1px] hover:bg-[#1C5E47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                className="auth-primary-button mt-4 flex h-[54px] w-full items-center justify-center space-x-2.5 rounded-xl bg-brand-green text-[15px] font-bold text-white transition-all duration-300 hover:-translate-y-[1px] hover:bg-[#1C5E47] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 {loading ? (
                   <>
@@ -283,7 +284,7 @@ export default function RegisterPage() {
                   </>
                 ) : (
                   <>
-                    <span>Create Account</span>
+                    <span>Start Free Trial — 2 Audits Included</span>
                     <ArrowRight className="h-[18px] w-[18px]" />
                   </>
                 )}

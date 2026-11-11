@@ -129,17 +129,17 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 space-y-8 bg-brand-cream min-h-screen">
-      {/* Page Title & Scans count */}
+      {/* Page Title & Scans count - PSYCHOLOGY: Loss Aversion + Clear Value Proposition */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-brand-deep tracking-tight">Global Compliance Dashboard</h1>
-          <p className="text-xs text-brand-deep/60 mt-1">
-            Active Framework: <span className="text-brand-green font-semibold font-mono">India DPDP Act 2023</span> | Aggregated Overview
+          <h1 className="text-3xl font-extrabold text-brand-deep tracking-tight">Your Compliance Protection Dashboard</h1>
+          <p className="text-sm text-brand-deep/70 mt-1.5 font-medium">
+            Active protection: <span className="text-brand-green font-semibold">DPDP Act 2023</span> • Avoid ₹250 Cr penalties with continuous monitoring
           </p>
         </div>
         <div className="flex items-center space-x-3 bg-white/60 border border-brand-deep/10 px-4 py-2.5 rounded-xl shadow-sm">
           <Calendar className="h-4 w-4 text-brand-deep/60" />
-          <span className="text-xs text-brand-deep/80 font-medium">As of {new Date().toLocaleDateString(undefined, {month: 'long', day: 'numeric', year: 'numeric'})}</span>
+          <span className="text-xs text-brand-deep/80 font-medium">Updated {new Date().toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
         </div>
       </div>
 

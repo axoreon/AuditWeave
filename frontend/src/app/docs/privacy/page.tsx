@@ -1,168 +1,629 @@
-import {
-  CheckCircle2,
-  Database,
-  FileText,
-  Mail,
-  MessageCircle,
-  Scale,
-  Shield,
-} from "lucide-react";
-import { PublicFooter } from "../../components/PublicFooter";
-import { PublicNavbar } from "../../components/PublicNavbar";
+"use client";
 
-const rights = [
-  "The right to access a summary of your personal data processed on the platform.",
-  "The right to correct inaccurate or obsolete profile information.",
-  "The right to request erasure of your user credentials and past audit histories at any time.",
-];
+import { PublicNavbar } from "@/app/components/PublicNavbar";
+import { LightFooter } from "@/app/components/home-light/LightFooter";
+import { motion } from "framer-motion";
 
-const processedData = [
-  "Account credentials (email address and encrypted password hash) for secure access.",
-  "Temporary privacy notice texts, URLs, or documents uploaded for GRC audits.",
-  "System interaction metadata stored inside secure GRC compliance logs.",
-];
-
-export default function PrivacyDocsPage() {
+export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-brand-cream text-brand-deep">
+    <div style={{ backgroundColor: "#F4F1EB", minHeight: "100vh" }}>
       <PublicNavbar />
-      <div className="bg-brand-deep">
-        <header className="mx-auto max-w-6xl px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-16">
-          <div className="max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#74D2B1]/30 bg-[#74D2B1]/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#74D2B1]">
-              <FileText className="h-3.5 w-3.5" aria-hidden="true" />
-              AuditWeave legal
+
+      <main className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
+        >
+          <h1 className="text-4xl font-bold mb-4" style={{ color: "#276152" }}>
+            Privacy Policy
+          </h1>
+          <p className="text-lg" style={{ color: "#666" }}>
+            AuditWeave Privacy & Compliance Policy Suite
+          </p>
+          <p className="text-sm mt-2" style={{ color: "#999" }}>
+            Comprehensive DPDP Act 2023 & DPDP Rules 2025 Website Governance Suite
+          </p>
+        </motion.div>
+
+        {/* Document Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-12 p-6 rounded-lg border-2"
+          style={{ borderColor: "#D4CAB8", backgroundColor: "white" }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p className="font-semibold mb-2" style={{ color: "#276152" }}>
+                Product & Platform
+              </p>
+              <p style={{ color: "#666" }}>
+                AuditWeave (SaaS Product by Axoreon) | Web Console: console.axoreon.com/auditweave
+              </p>
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Privacy Policy
-            </h1>
-            <p className="mt-5 max-w-2xl text-sm font-medium leading-7 text-white/65 sm:text-base">
-              Clear information about how AuditWeave processes account data and uploaded
-              privacy policies in alignment with India&apos;s DPDP Act 2023.
+            <div>
+              <p className="font-semibold mb-2" style={{ color: "#276152" }}>
+                Operating Entity
+              </p>
+              <p style={{ color: "#666" }}>
+                Axoreon (Private Limited / Recognized Startup)
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold mb-2" style={{ color: "#276152" }}>
+                Applicable Framework
+              </p>
+              <p style={{ color: "#666" }}>
+                Digital Personal Data Protection Act, 2023 & DPDP Rules, 2025
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold mb-2" style={{ color: "#276152" }}>
+                Document Version
+              </p>
+              <p style={{ color: "#666" }}>
+                Version 1.0 (Master Website Production Suite)
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Contact Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-12 p-6 rounded-lg border-2"
+          style={{ borderColor: "#E5E0D5", backgroundColor: "#FAFBF9" }}
+        >
+          <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+            Data Protection Officer & Grievance Contact
+          </h2>
+          <div className="space-y-2" style={{ color: "#666" }}>
+            <p>
+              <span className="font-semibold">Email:</span> dpo@axoreon.com
+            </p>
+            <p>
+              <span className="font-semibold">Legal:</span> legal@axoreon.com
+            </p>
+            <p>
+              <span className="font-semibold">Grievance Resolution:</span> Within 14 business days (max 90 days)
             </p>
           </div>
-        </header>
-      </div>
+        </motion.div>
 
-      <main className="mx-auto -mt-14 max-w-6xl px-5 pb-16 sm:px-8 sm:pb-20">
-        <article className="overflow-hidden rounded-[30px] border border-brand-deep/10 bg-white shadow-[0_24px_80px_rgba(13,58,53,0.12)]">
-          <div className="flex flex-col gap-4 border-b border-brand-deep/10 bg-brand-green/[0.05] px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-10">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
-                <Shield className="h-5 w-5" aria-hidden="true" />
+        {/* Key Sections */}
+        <div className="space-y-12">
+          {/* 1. Scope and Applicability */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              1. Scope and Applicability
+            </h2>
+            <p className="mb-4" style={{ color: "#666" }}>
+              This Master Privacy Policy governs the collection, storage, processing, disclosure, retention, and erasure of digital personal data by Axoreon, operating the AuditWeave platform. This Policy is issued in strict compliance with Section 5 of India's Digital Personal Data Protection (DPDP) Act, 2023 and Rule 3 of the DPDP Rules, 2025.
+            </p>
+            <p style={{ color: "#666" }}>
+              This Policy applies to all individuals who register an account, access our compliance tools, submit privacy policies for auditing, subscribe to paid plans, or interact with our web surface.
+            </p>
+          </motion.section>
+
+          {/* 2. Categories of Personal Data */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              2. Categories of Personal Data Collected
+            </h2>
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Account Information</p>
+                <p style={{ color: "#666" }}>
+                  Full Name, Email Address, and Login Credentials collected during user account registration and authentication.
+                </p>
               </div>
-              <div>
-                <p className="text-sm font-extrabold text-brand-deep">Your privacy, explained clearly</p>
-                <p className="mt-0.5 text-xs font-medium text-brand-deep/55">Account data and audit-content processing</p>
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Payment Information</p>
+                <p style={{ color: "#666" }}>
+                  Mobile Number, Billing Name, Billing Address, GSTIN (optional), and Transaction Reference ID collected via Razorpay. We DO NOT store full payment card details, banking credentials, or payment instrument codes.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Audit Content</p>
+                <p style={{ color: "#666" }}>
+                  Website URLs, pasted privacy policy texts, and uploaded document files (PDF or DOCX format) submitted for compliance auditing.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>System Information</p>
+                <p style={{ color: "#666" }}>
+                  IP Address (hashed), Browser User-Agent, Session Timestamps, Feature Usage Metrics, and Audit History Logs collected for system security and operational integrity.
+                </p>
               </div>
             </div>
-            <span className="w-fit rounded-full border border-brand-green/20 bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-brand-green">
-              DPDP Act 2023
-            </span>
-          </div>
+          </motion.section>
 
-          <div className="divide-y divide-brand-deep/10 px-6 sm:px-10">
-            <section className="grid gap-5 py-9 sm:grid-cols-[56px_1fr] sm:py-10">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
-                <Database className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green">Section 01</p>
-                <h2 className="mt-2 text-xl font-extrabold tracking-tight sm:text-2xl">Data We Process</h2>
-                <p className="mt-4 text-sm font-medium leading-7 text-brand-deep/70">
-                  AuditWeave acts as a <strong className="font-extrabold text-brand-deep">Data Fiduciary</strong> for
-                  user accounts and a <strong className="font-extrabold text-brand-deep">Data Processor</strong> for
-                  uploaded privacy policies. We collect:
+          {/* 3. Specified Purposes */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              3. Specified Purposes and Lawful Grounds for Processing
+            </h2>
+            <p className="mb-6" style={{ color: "#666" }}>
+              Personal data is processed strictly for specified, lawful purposes backed by appropriate legal grounds under Section 4 and Section 7 of the DPDP Act.
+            </p>
+
+            <div className="mb-6 p-5 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-bold mb-2" style={{ color: "#276152" }}>Cross-Border Transfer Framework</p>
+              <p style={{ color: "#666" }}>
+                We will address cross-border transfer through a documented process that clearly describes the personal data involved, the specified purpose, the applicable user choices, and the method for exercising relevant rights. Required organization-specific details will be published at <a href="mailto:dpo@axoreon.com" className="font-semibold hover:underline" style={{ color: "#276152" }}>dpo@axoreon.com</a> upon request.
+              </p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr style={{ backgroundColor: "#F4F1EB" }}>
+                    <th className="border p-3 text-left font-semibold text-sm" style={{ color: "#276152", borderColor: "#D4CAB8" }}>
+                      Data Category
+                    </th>
+                    <th className="border p-3 text-left font-semibold text-sm" style={{ color: "#276152", borderColor: "#D4CAB8" }}>
+                      Purpose
+                    </th>
+                    <th className="border p-3 text-left font-semibold text-sm" style={{ color: "#276152", borderColor: "#D4CAB8" }}>
+                      Legal Ground
+                    </th>
+                    <th className="border p-3 text-left font-semibold text-sm" style={{ color: "#276152", borderColor: "#D4CAB8" }}>
+                      Retention
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ backgroundColor: "white" }}>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Account Registration</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>User authentication, account setup, password reset</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Consent (Section 6)</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Duration of active account</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "#FAFBF9" }}>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Payment Metadata</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Processing transactions, issuing invoices, GST compliance</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Legal Obligation</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>7 years (tax law)</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "white" }}>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Audit Files</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Text extraction, DPDP analysis, compliance scoring</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Consent / Contract</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Until deleted by user</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "#FAFBF9" }}>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>System Logs</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Security monitoring, threat detection, rate-limiting</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Statutory Safeguard</td>
+                    <td className="border p-3 text-sm" style={{ color: "#666", borderColor: "#D4CAB8" }}>Minimum 1 year</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </motion.section>
+
+          {/* 4. Customer Content Protection */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              4. Special Protections for Customer Submitted Audit Content
+            </h2>
+            <div className="space-y-3">
+              <p style={{ color: "#666" }}>
+                ✓ <span className="font-semibold">No Model Training:</span> We DO NOT use customer privacy policies or uploaded files to train public AI or LLM models.
+              </p>
+              <p style={{ color: "#666" }}>
+                ✓ <span className="font-semibold">Temporary Processing:</span> Files are stored in secure, temporary storage during extraction and automatically purged upon report completion.
+              </p>
+              <p style={{ color: "#666" }}>
+                ✓ <span className="font-semibold">Encrypted Storage:</span> Saved audit reports are encrypted at rest using AES-256 and accessible exclusively by the authenticated account holder.
+              </p>
+              <p style={{ color: "#666" }}>
+                ✓ <span className="font-semibold">Confidentiality:</span> Your submitted content is treated with strict confidentiality and never shared with third parties.
+              </p>
+            </div>
+          </motion.section>
+
+          {/* 5. Data Principal Rights */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              5. Your Data Rights
+            </h2>
+
+            <div className="mb-6 p-5 rounded-lg border-2" style={{ borderColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-bold mb-3" style={{ color: "#276152" }}>Pre-Consent Notice</p>
+              <p className="mb-3" style={{ color: "#666" }}>
+                Before requesting consent, we will provide a clear notice identifying the personal data to be processed and each specified purpose of processing. The notice will also explain how to:
+              </p>
+              <ul className="space-y-2 ml-4">
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>Withdraw consent at any time</p>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>Exercise data principal rights (access, correction, erasure)</p>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>Raise a grievance with our Data Protection Officer</p>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span style={{ color: "#276152" }}>•</span>
+                  <p className="text-sm" style={{ color: "#666" }}>File a complaint with the Data Protection Board of India</p>
+                </li>
+              </ul>
+              <p className="mt-3 text-sm" style={{ color: "#666" }}>
+                The relevant access method is available at <a href="mailto:dpo@axoreon.com" className="font-semibold hover:underline" style={{ color: "#276152" }}>dpo@axoreon.com</a>
+              </p>
+            </div>
+
+            <p className="mb-6" style={{ color: "#666" }}>
+              Under Chapter III of the DPDP Act (Sections 11–14), you possess the following enforceable statutory rights:
+            </p>
+            <div className="space-y-3">
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Right to Access (Section 11)</p>
+                <p style={{ color: "#666" }}>
+                  Obtain a summary of personal data being processed, processing activities, and identities of third parties with whom data has been shared.
                 </p>
-                <ul className="mt-5 grid gap-3">
-                  {processedData.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-sm font-medium leading-6 text-brand-deep/70">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" aria-hidden="true" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-            </section>
-
-            <section className="grid gap-5 py-9 sm:grid-cols-[56px_1fr] sm:py-10">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
-                <FileText className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green">Section 02</p>
-                <h2 className="mt-2 text-xl font-extrabold tracking-tight sm:text-2xl">Purpose &amp; Notice of Collection</h2>
-                <p className="mt-1 text-xs font-bold text-brand-deep/45">DPDP Act 2023 · Section 5</p>
-                <p className="mt-4 text-sm font-medium leading-7 text-brand-deep/70">
-                  User details are processed exclusively to authenticate accounts and audit uploaded policy texts
-                  against statutory compliance rules. Uploaded privacy policies are parsed inside transient memory
-                  and deleted permanently from analysis workers once report compilations are completed. We do{" "}
-                  <strong className="font-extrabold text-brand-deep">not</strong> sell, monetize, or utilize uploaded
-                  policy contents for training third-party models.
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Right to Correction (Section 12(1))</p>
+                <p style={{ color: "#666" }}>
+                  Request correction of inaccurate data, completion of incomplete records, and updating of personal details.
                 </p>
               </div>
-            </section>
-
-            <section className="grid gap-5 py-9 sm:grid-cols-[56px_1fr] sm:py-10">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
-                <Scale className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green">Section 03</p>
-                <h2 className="mt-2 text-xl font-extrabold tracking-tight sm:text-2xl">Data Principal Rights</h2>
-                <p className="mt-1 text-xs font-bold text-brand-deep/45">DPDP Act 2023 · Sections 11 &amp; 12</p>
-                <p className="mt-4 text-sm font-medium leading-7 text-brand-deep/70">
-                  In accordance with the DPDP Act 2023, you have:
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Right to Erasure (Section 12(3))</p>
+                <p style={{ color: "#666" }}>
+                  Request permanent erasure of personal data, executed automatically unless retention is required by law.
                 </p>
-                <ul className="mt-5 grid gap-3">
-                  {rights.map((right) => (
-                    <li key={right} className="flex items-start gap-3 text-sm font-medium leading-6 text-brand-deep/70">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" aria-hidden="true" />
-                      <span>{right}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-            </section>
-
-            <section className="grid gap-5 py-9 sm:grid-cols-[56px_1fr] sm:py-10">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
-                <MessageCircle className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green">Section 04</p>
-                <h2 className="mt-2 text-xl font-extrabold tracking-tight sm:text-2xl">Grievance Redressal</h2>
-                <p className="mt-1 text-xs font-bold text-brand-deep/45">DPDP Act 2023 · Section 13</p>
-                <p className="mt-4 text-sm font-medium leading-7 text-brand-deep/70">
-                  For complaints, rights exercise queries, or data issues, please contact our designated{" "}
-                  <strong className="font-extrabold text-brand-deep">Nodal Grievance Redressal Officer</strong>:
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Right to Nominate (Section 14)</p>
+                <p style={{ color: "#666" }}>
+                  Nominate an individual to exercise rights in the event of death or legal incapacity.
                 </p>
+              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Right to Grievance Redressal (Section 13)</p>
+                <p style={{ color: "#666" }}>
+                  File complaints regarding data processing practices, resolved within 14 business days (maximum 90 days).
+                </p>
+              </div>
+            </div>
+          </motion.section>
 
-                <div className="mt-6 rounded-2xl border border-brand-green/20 bg-brand-green/[0.06] p-5 sm:p-6">
-                  <p className="text-base font-extrabold text-brand-deep">Mr. Ramesh Kumar</p>
-                  <a
-                    href="mailto:grievance@auditweave.ai"
-                    className="mt-3 inline-flex items-center gap-2 rounded-sm text-sm font-bold text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/30"
-                  >
-                    <Mail className="h-4 w-4" aria-hidden="true" />
-                    grievance@auditweave.ai
-                  </a>
-                  <p className="mt-3 text-sm font-medium leading-6 text-brand-deep/65">
-                    AuditWeave GRC Labs, Sector 5, Salt Lake, Kolkata, India
+          {/* 6. Consent Withdrawal */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              6. Consent Withdrawal Parity Mechanism
+            </h2>
+            <p className="mb-4" style={{ color: "#666" }}>
+              Under Section 6(4) of the DPDP Act, you have the right to withdraw consent at any time with the same ease as giving it.
+            </p>
+            <div className="p-4 rounded-lg border-2" style={{ borderColor: "#D4CAB8", backgroundColor: "white" }}>
+              <p style={{ color: "#666" }}>
+                AuditWeave provides a <span className="font-semibold">1-click 'Revoke Consent' button</span> in your account dashboard. Upon withdrawal, we will cease processing your personal data within a reasonable time, except where retention is mandated by law.
+              </p>
+            </div>
+          </motion.section>
+
+          {/* 7. Data Retention */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              7. Data Retention and Auto-Erasure Framework
+            </h2>
+            <div className="space-y-4">
+              <p style={{ color: "#666" }}>
+                In compliance with Section 8(7) and Rule 8 of the DPDP Rules, 2025:
+              </p>
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Account Data</p>
+                <p style={{ color: "#666" }}>
+                  Retained for the duration of active account usage. If your account remains inactive for 3 years, you'll receive a 48-hour pre-erasure notification before permanent deletion.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>System Logs</p>
+                <p style={{ color: "#666" }}>
+                  Technical logs are immutably retained for a minimum of 1 year (365 days) as mandated by Rule 6(1)(e).
+                </p>
+              </div>
+              <div className="p-4 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Financial Records</p>
+                <p style={{ color: "#666" }}>
+                  Subscription and transaction records are retained for 7 years per Indian tax and Companies Act requirements.
+                </p>
+              </div>
+            </div>
+          </motion.section>
+
+          {/* 8. Security Safeguards */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              8. Information Security & Technical Safeguards
+            </h2>
+            <p className="mb-6" style={{ color: "#666" }}>
+              We use reasonable security safeguards appropriate to the nature and risk of the personal data we process, including encryption, access controls, backup mechanisms, and continuous monitoring. If a personal-data breach occurs, we will follow the notification and response requirements that apply to the incident under Section 8(6) of the DPDP Act, 2023.
+            </p>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <span className="font-bold" style={{ color: "#276152" }}>🔒</span>
+                <div>
+                  <p className="font-semibold mb-1" style={{ color: "#276152" }}>Encryption in Transit</p>
+                  <p style={{ color: "#666" }}>
+                    All web traffic uses TLS 1.3 with HTTP Strict Transport Security (HSTS) enforced.
                   </p>
-                  <div className="mt-5 border-t border-brand-green/15 pt-4">
-                    <p className="text-xs font-bold leading-5 text-brand-deep/55">
-                      Response SLA: Grievance resolutions are addressed and completed within 15 business days.
-                    </p>
-                  </div>
                 </div>
               </div>
-            </section>
-          </div>
-        </article>
+              <div className="flex items-start gap-3">
+                <span className="font-bold" style={{ color: "#276152" }}>🔐</span>
+                <div>
+                  <p className="font-semibold mb-1" style={{ color: "#276152" }}>Encryption at Rest</p>
+                  <p style={{ color: "#666" }}>
+                    All databases and backups use AES-256 encryption. Sensitive fields use tokenization.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="font-bold" style={{ color: "#276152" }}>👤</span>
+                <div>
+                  <p className="font-semibold mb-1" style={{ color: "#276152" }}>Access Controls</p>
+                  <p style={{ color: "#666" }}>
+                    Role-based access control (RBAC) and multi-factor authentication (MFA) enforced for all administrative access.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="font-bold" style={{ color: "#276152" }}>🛡️</span>
+                <div>
+                  <p className="font-semibold mb-1" style={{ color: "#276152" }}>API Security</p>
+                  <p style={{ color: "#666" }}>
+                    API endpoints protected against OWASP Top 10 vulnerabilities with token validation and authorization checks.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="font-bold" style={{ color: "#276152" }}>📦</span>
+                <div>
+                  <p className="font-semibold mb-1" style={{ color: "#276152" }}>Backups</p>
+                  <p style={{ color: "#666" }}>
+                    Daily encrypted backups in geographically isolated cloud regions within India, tested quarterly.
+                  </p>
+                </div>
+              </div>
+            </div>
 
+            <div className="mt-6 p-5 rounded-lg border-l-4" style={{ borderLeftColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-bold mb-2" style={{ color: "#276152" }}>Data Breach Notification</p>
+              <p style={{ color: "#666" }}>
+                In the event of a personal data breach that is likely to cause harm to data principals, we will notify the Data Protection Board of India and affected individuals in accordance with Section 8(6) of the DPDP Act and Rule 7 of the DPDP Rules, 2025, within the prescribed timeline.
+              </p>
+            </div>
+          </motion.section>
+
+          {/* 9. Cookies Policy */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              9. Cookies & Tracking Technologies
+            </h2>
+            <p className="mb-6" style={{ color: "#666" }}>
+              AuditWeave enforces client-side pre-consent hard blocking. Non-essential tracking scripts are disabled until you provide explicit opt-in consent.
+            </p>
+            <div className="space-y-3">
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Strictly Necessary Cookies</p>
+                <p style={{ color: "#666" }}>
+                  Essential for navigation, authentication, and security. Always active and cannot be disabled.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Functional Cookies</p>
+                <p style={{ color: "#666" }}>
+                  Remember user preferences like language and dark mode. Disabled by default, requires opt-in.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Analytics Cookies</p>
+                <p style={{ color: "#666" }}>
+                  Measure website traffic and performance. Disabled by default, requires explicit opt-in.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: "#FAFBF9" }}>
+                <p className="font-semibold mb-1" style={{ color: "#276152" }}>Marketing Cookies</p>
+                <p style={{ color: "#666" }}>
+                  Track campaign effectiveness. Disabled by default, requires opt-in. Prohibited for minors.
+                </p>
+              </div>
+            </div>
+            <p className="mt-6" style={{ color: "#666" }}>
+              You can modify or revoke cookie preferences at any time using the persistent floating 'Cookie Preferences' icon at the bottom-left of every page.
+            </p>
+          </motion.section>
+
+          {/* 10. Terms of Service */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              10. Terms of Service
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Eligibility</p>
+                <p style={{ color: "#666" }}>
+                  You must be at least 18 years of age to create an account and use AuditWeave. Minors are strictly prohibited.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Account Security</p>
+                <p style={{ color: "#666" }}>
+                  You are responsible for maintaining the confidentiality of your login credentials. Notify us immediately at legal@axoreon.com of any unauthorized access.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Intellectual Property</p>
+                <p style={{ color: "#666" }}>
+                  AuditWeave grants you a non-exclusive, non-transferable license to use the platform. All software, algorithms, designs, and trademarks remain Axoreon's exclusive property.
+                </p>
+              </div>
+              <div className="p-4 rounded-lg border-2" style={{ borderColor: "#D4CAB8", backgroundColor: "white" }}>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>⚠️ Legal Disclaimer</p>
+                <p style={{ color: "#666" }}>
+                  AuditWeave provides <span className="font-semibold">automated compliance assistance</span> and does NOT constitute formal legal advice. Generated policies and findings MUST be reviewed by qualified Indian legal counsel before publication.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Prohibited Activities</p>
+                <p style={{ color: "#666" }}>
+                  You shall not: reverse engineer the platform, use automated scrapers, submit malicious code, or resell account access without authorization.
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold mb-2" style={{ color: "#276152" }}>Governing Law</p>
+                <p style={{ color: "#666" }}>
+                  These Terms are governed by the laws of India. Any disputes are subject to the exclusive jurisdiction of competent courts in Bengaluru, Karnataka, India.
+                </p>
+              </div>
+            </div>
+          </motion.section>
+
+          {/* 11. Grievance Redressal */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              11. Grievance Redressal Process
+            </h2>
+            <p className="mb-6" style={{ color: "#666" }}>
+              In compliance with Section 8(9), Section 13, and Rule 9 of the DPDP Rules, 2025, Axoreon has appointed a designated Grievance Officer and Data Protection Officer based in India.
+            </p>
+            <div className="p-6 rounded-lg border-2" style={{ borderColor: "#276152", backgroundColor: "#FAFBF9" }}>
+              <p className="font-semibold mb-4" style={{ color: "#276152" }}>Data Protection Officer & Grievance Officer</p>
+              <div className="space-y-3" style={{ color: "#666" }}>
+                <p>
+                  <span className="font-semibold">Email:</span> dpo@axoreon.com
+                </p>
+                <p>
+                  <span className="font-semibold">Legal:</span> legal@axoreon.com
+                </p>
+                <p>
+                  <span className="font-semibold">Hours:</span> Mon–Fri, 09:00 to 18:00 IST
+                </p>
+                <p>
+                  <span className="font-semibold">Acknowledgment:</span> Within 48 hours
+                </p>
+                <p>
+                  <span className="font-semibold">Resolution:</span> Within 14 business days (maximum 90 days per statute)
+                </p>
+              </div>
+            </div>
+            <p className="mt-6" style={{ color: "#666" }}>
+              You must exhaust this internal grievance mechanism before filing a complaint with the Data Protection Board of India (dpb.gov.in).
+            </p>
+          </motion.section>
+
+          {/* 12. Critical Distinctions */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#276152" }}>
+              12. DPDP vs. GDPR: Critical Distinction
+            </h2>
+            <div className="p-6 rounded-lg border-2" style={{ borderColor: "#D4CAB8", backgroundColor: "white" }}>
+              <p className="font-semibold mb-4" style={{ color: "#276152" }}>⚠️ Important Notice</p>
+              <p style={{ color: "#666" }}>
+                Unlike the EU General Data Protection Regulation (GDPR), India's DPDP Act <span className="font-semibold">DOES NOT recognize a generic 'legitimate interests' ground</span> for processing personal data.
+              </p>
+              <p className="mt-4" style={{ color: "#666" }}>
+                Axoreon cannot bypass user consent for analytics, profiling, or commercial communications. All commercial processing on AuditWeave must be grounded in <span className="font-semibold">explicit, unbundled user consent</span> under Section 6 of the DPDP Act.
+              </p>
+            </div>
+          </motion.section>
+
+          {/* Policy Version */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="border-t-2 pt-8"
+            style={{ borderTopColor: "#D4CAB8" }}
+          >
+            <p className="text-center" style={{ color: "#999" }}>
+              <span className="font-semibold">Privacy Policy Version:</span> 1.0 (Master Website Production Suite)
+            </p>
+            <p className="text-center mt-2" style={{ color: "#999" }}>
+              <span className="font-semibold">Last Updated:</span> November 2025
+            </p>
+            <p className="text-center mt-2" style={{ color: "#999" }}>
+              <span className="font-semibold">Effective Date:</span> November 13, 2025 (DPDP Act & Rules Implementation Date)
+            </p>
+          </motion.section>
+        </div>
       </main>
-      <PublicFooter />
+
+      <LightFooter />
     </div>
   );
 }

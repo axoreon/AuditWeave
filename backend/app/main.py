@@ -25,6 +25,7 @@ from .schemas import (
     AuditResponse, CompareRequest, RewriteRequest, RewriteResponse, CopilotRequest,
     CopilotResponse, BenchmarkResponse, BatchAuditRequest, ContactRequest, ContactResponse,
     CreateOrderRequest, CreditActivityPage, CreditPlanResponse, CreditSummaryResponse,
+    OfferResponse,
     PaymentHistoryPage, PaymentVerificationResponse, VerifyPaymentRequest
 )
 from .auth import (
@@ -1711,6 +1712,50 @@ RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)) if RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET else None
 
+
+# --- RAZORPAY OFFERS ---
+
+TARGET_OFFER_METADATA = {
+    "offer_TwSlqIzMq1cxqH": {
+        "id": "offer_TwSlqIzMq1cxqH",
+        "title": "20% OFF special for you as an welcome GIFT",
+        "description": "Instant 20% discount up to ₹10,000 on a minimum purchase of ₹100. Applicable on UPI, Cards, Netbanking, and Wallets.",
+        "percent_off": 20.0,
+        "flat_amount_off": None,
+        "min_amount": 10000,
+        "valid_till": "2027-01-01T23:59:00",
+        "active": True,
+    }
+}
+
+OFFER_ALIASES = {
+    "WELCOME20": "offer_TwSlqIzMq1cxqH",
+    "WELCOME": "offer_TwSlqIzMq1cxqH",
+    "DISCOUNT20": "offer_TwSlqIzMq1cxqH",
+    "AUDIT20": "offer_TwSlqIzMq1cxqH",
+}
+
+
+@app.get("/api/payments/offers/{offer_id}", response_model=OfferResponse)
+def get_offer_details(offer_id: str):
+    """
+    Fetch and validate Razorpay offer details by offer_id or promotional alias.
+    """
+    sanitized_id = offer_id.strip()
+    upper_alias = sanitized_id.upper()
+    if upper_alias in OFFER_ALIASES:
+        sanitized_id = OFFER_ALIASES[upper_alias]
+
+    if not (sanitized_id.startswith("offer_") or upper_alias in OFFER_ALIASES):
+        raise HTTPException(status_code=400, detail="Invalid coupon or offer ID format.")
+
+    # 1. Check registered campaign metadata (e.g. offer_TwSlqIzMq1cxqH)
+    if sanitized_id in TARGET_OFFER_METADATA:
+        return TARGET_OFFER_METADATA[sanitized_id]
+
+    raise HTTPException(status_code=404, detail="Offer not found or no longer active.")
+
+
 @app.get("/api/credits/plans", response_model=List[CreditPlanResponse])
 def get_credit_plans():
     return list_credit_packs()
@@ -1885,17 +1930,51 @@ async def create_payment_order(request: CreateOrderRequest, db: Session = Depend
     pack = get_credit_pack(request.plan_id)
     if pack is None:
         raise HTTPException(status_code=400, detail="Unknown credit plan.")
-    amount_paise = int(pack["price_inr"]) * 100
+
+    # Calculate price with offer discount applied
+    amount_inr = int(pack["price_inr"])
+    applied_offer = None
+    resolved_offer_id = None
+
+    if request.offer_id:
+        raw_id = request.offer_id.strip()
+        upper_alias = raw_id.upper()
+        resolved_offer_id = OFFER_ALIASES.get(upper_alias, raw_id)
+        if resolved_offer_id in TARGET_OFFER_METADATA and TARGET_OFFER_METADATA[resolved_offer_id]["active"]:
+            applied_offer = TARGET_OFFER_METADATA[resolved_offer_id]
+            if applied_offer.get("percent_off") and applied_offer["percent_off"] > 0:
+                discount = round((amount_inr * applied_offer["percent_off"]) / 100.0)
+                amount_inr = max(1, amount_inr - discount)
+            elif applied_offer.get("flat_amount_off") and applied_offer["flat_amount_off"] > 0:
+                discount = round(applied_offer["flat_amount_off"] / 100.0)
+                amount_inr = max(1, amount_inr - discount)
+
+    amount_paise = amount_inr * 100
 
     if not razorpay_client:
         raise HTTPException(status_code=500, detail="Razorpay is not configured on the server.")
 
     try:
-        order_data = razorpay_client.order.create({
+        order_payload = {
             "amount": amount_paise,
             "currency": pack["currency"],
-            "receipt": f"receipt_{uuid.uuid4().hex[:10]}"
-        })
+            "receipt": f"receipt_{uuid.uuid4().hex[:10]}",
+            "notes": {
+                "plan_id": pack["id"],
+                "user_id": str(current_user.id),
+            }
+        }
+        if resolved_offer_id:
+            order_payload["notes"]["offer_id"] = resolved_offer_id
+            order_payload["notes"]["discounted"] = "true"
+            try:
+                order_payload_with_offer = {**order_payload, "offers": [resolved_offer_id]}
+                order_data = razorpay_client.order.create(order_payload_with_offer)
+            except Exception as offer_err:
+                logger.info("Order create with offers array: %s; falling back to direct amount", offer_err)
+                order_data = razorpay_client.order.create(order_payload)
+        else:
+            order_data = razorpay_client.order.create(order_payload)
         order_id = order_data["id"]
 
         # Store the order in the database
@@ -1933,9 +2012,14 @@ def validate_razorpay_payment(payment_order: dict, razorpay_payment_id: str) -> 
     except (TypeError, ValueError):
         provider_amount = -1
 
+    has_offer = bool(provider_payment.get("offer_id")) or (provider_payment.get("discount") is not None)
+    is_amount_valid = (provider_amount == payment_order["amount_paid"]) or (
+        has_offer and 0 < provider_amount <= payment_order["amount_paid"]
+    )
+
     if (
         provider_payment.get("order_id") != payment_order["razorpay_order_id"]
-        or provider_amount != payment_order["amount_paid"]
+        or not is_amount_valid
         or provider_payment.get("currency") != payment_order["currency"]
         or provider_payment.get("status") != "captured"
     ):

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
-import { BrandLogo } from "./BrandLogo";
 
 type PublicNavbarProps = {
   activePage?: "pricing";
@@ -34,113 +34,166 @@ export function PublicNavbar({ activePage }: PublicNavbarProps) {
   }, [isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
-  const desktopLinkClass =
-    "relative rounded-sm py-1 text-sm font-bold uppercase tracking-wider transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-brand-green after:transition-transform after:duration-200 hover:text-brand-green hover:after:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-4 focus-visible:ring-offset-brand-cream";
-  const mobileLinkClass =
-    "flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-deep transition-colors duration-200 hover:bg-brand-green/10 hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40";
 
   return (
-    <nav
-      className="relative z-30 mx-auto flex h-20 w-full max-w-7xl items-center justify-between border-b border-brand-deep/10 px-4 sm:px-6"
-      aria-label="Public navigation"
-    >
-      <div className="flex min-w-0 items-center space-x-8">
-        <Link
-          href="/"
-          className="flex min-w-0 items-center space-x-2.5 rounded-md transition-opacity duration-200 hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-4 focus-visible:ring-offset-brand-cream sm:space-x-3"
-          aria-label="AuditWeave home"
-        >
-          <BrandLogo
-            size={40}
-            alt=""
-            className="h-10 w-10 drop-shadow-md md:h-11 md:w-11"
-            priority
-          />
-          <span className="flex min-w-0 flex-col justify-center">
-            <span className="font-serif text-xl font-extrabold leading-none tracking-tighter text-brand-deep sm:text-2xl">
-              AuditWeave
-            </span>
-            <span className="mt-1 text-[9px] font-bold uppercase leading-none tracking-widest text-brand-deep/55 sm:text-[10px]">
-              Powered by Axoreon
-            </span>
-          </span>
-        </Link>
+    <nav className="relative z-50 border-b" style={{ borderColor: "#E5E0D5", backgroundColor: "#F4F1EB" }}>
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-16 xl:px-24">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo - Axoreon Logo with AuditWeave Text */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Link href="/" className="flex items-center gap-3">
+              {/* Axoreon Logo - SVG Badge */}
+              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg" style={{ backgroundColor: "#003D33" }}>
+                <span className="text-lg font-bold text-white">A</span>
+              </div>
 
-        <div className="hidden items-center space-x-6 border-l border-brand-deep/10 pl-6 md:flex">
-          <Link
-            href="/pricing"
-            aria-current={activePage === "pricing" ? "page" : undefined}
-            className={`${desktopLinkClass} ${
-              activePage === "pricing" ? "text-brand-green after:scale-x-100" : "text-brand-deep/70"
-            }`}
+              {/* Text Branding */}
+              <div className="flex flex-col items-start hidden sm:flex">
+                <span className="text-xl font-bold" style={{ color: "#276152", fontFamily: "Georgia, serif", letterSpacing: "-0.5px" }}>
+                  AuditWeave
+                </span>
+                <span className="text-xs font-semibold" style={{ color: "#999" }}>
+                  Powered by Axoreon
+                </span>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center gap-8">
+            <Link
+              href="/#how-it-works"
+              className="text-sm font-semibold transition-colors hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              How It Works
+            </Link>
+            <Link
+              href="/docs"
+              className="text-sm font-semibold transition-colors hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              Documentation
+            </Link>
+            <Link
+              href="/pricing"
+              className={`text-sm font-semibold transition-colors hover:opacity-70 ${activePage === "pricing" ? "font-bold" : ""}`}
+              style={{ color: "#276152" }}
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/contact"
+              className="text-sm font-semibold transition-colors hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              Contact
+            </Link>
+          </div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="hidden sm:flex items-center gap-3"
           >
-            Pricing
-          </Link>
-          <Link
-            href="/contact"
-            className={`${desktopLinkClass} text-brand-deep/70`}
+            <Link
+              href="/login"
+              className="px-4 py-2 text-sm font-bold transition-colors hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              Log In
+            </Link>
+            <Link
+              href="/register"
+              className="px-4 py-2 rounded-lg text-sm font-bold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
+              style={{ backgroundColor: "#276152" }}
+            >
+              Sign Up
+            </Link>
+          </motion.div>
+
+          {/* Mobile Menu Button */}
+          <button
+            ref={menuButtonRef}
+            onClick={() => setIsMenuOpen((open) => !open)}
+            className="lg:hidden p-2"
+            style={{ color: "#276152" }}
           >
-            Contact
-          </Link>
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
         </div>
-      </div>
 
-      <div className="hidden items-center space-x-4 md:flex">
-        <Link
-          href="/login"
-          className={`${desktopLinkClass} px-2 text-brand-deep`}
-        >
-          Log In
-        </Link>
-        <Link
-          href="/register"
-          className="rounded-lg bg-brand-green px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-white shadow-sm shadow-brand-green/20 transition-[transform,background-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:bg-[#2e745e] hover:shadow-md hover:shadow-brand-green/25 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-brand-cream active:translate-y-0 active:shadow-sm"
-        >
-          Sign Up
-        </Link>
-      </div>
-
-      <button
-        ref={menuButtonRef}
-        type="button"
-        aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-        aria-expanded={isMenuOpen}
-        aria-controls={menuId}
-        onClick={() => setIsMenuOpen((open) => !open)}
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-brand-deep/10 bg-white text-brand-deep shadow-sm transition-[color,background-color,border-color,box-shadow] duration-200 hover:border-brand-green/25 hover:bg-brand-green/5 hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-brand-cream md:hidden"
-      >
-        {isMenuOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
-      </button>
-
-      {isMenuOpen && (
-        <div
-          id={menuId}
-          className="absolute inset-x-4 top-[calc(100%+0.5rem)] rounded-xl border border-brand-deep/10 bg-brand-cream p-2 shadow-[0_18px_45px_-24px_rgba(13,58,53,0.4)] sm:inset-x-6 md:hidden"
-        >
-          <Link
-            ref={firstMenuLinkRef}
-            href="/pricing"
-            aria-current={activePage === "pricing" ? "page" : undefined}
-            onClick={closeMenu}
-            className={`${mobileLinkClass} ${activePage === "pricing" ? "bg-brand-green/10 text-brand-green" : ""}`}
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="lg:hidden pb-4 space-y-3 border-t"
+            style={{ borderColor: "#E5E0D5" }}
           >
-            Pricing
-          </Link>
-          <Link href="/contact" onClick={closeMenu} className={mobileLinkClass}>
-            Contact
-          </Link>
-          <Link href="/login" onClick={closeMenu} className={mobileLinkClass}>
-            Log In
-          </Link>
-          <Link
-            href="/register"
-            onClick={closeMenu}
-            className="mt-1 flex min-h-11 items-center justify-center rounded-lg bg-brand-green px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-white shadow-sm shadow-brand-green/20 transition-colors duration-200 hover:bg-[#2e745e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-brand-cream"
-          >
-            Sign Up
-          </Link>
-        </div>
-      )}
+            <Link
+              href="/#how-it-works"
+              onClick={closeMenu}
+              className="block px-4 py-2 text-sm font-semibold rounded-lg transition-all hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              How It Works
+            </Link>
+            <Link
+              href="/docs"
+              onClick={closeMenu}
+              className="block px-4 py-2 text-sm font-semibold rounded-lg transition-all hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              Documentation
+            </Link>
+            <Link
+              ref={firstMenuLinkRef}
+              href="/pricing"
+              onClick={closeMenu}
+              className={`block px-4 py-2 text-sm font-semibold rounded-lg transition-all hover:opacity-70 ${activePage === "pricing" ? "font-bold" : ""}`}
+              style={{ color: "#276152" }}
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/contact"
+              onClick={closeMenu}
+              className="block px-4 py-2 text-sm font-semibold rounded-lg transition-all hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              Contact
+            </Link>
+            <Link
+              href="/login"
+              onClick={closeMenu}
+              className="block px-4 py-2 text-sm font-semibold rounded-lg transition-all hover:opacity-70"
+              style={{ color: "#276152" }}
+            >
+              Log In
+            </Link>
+            <Link
+              href="/register"
+              onClick={closeMenu}
+              className="block w-full px-4 py-2 rounded-lg text-sm font-bold text-white text-center shadow-lg"
+              style={{ backgroundColor: "#276152" }}
+            >
+              Sign Up
+            </Link>
+          </motion.div>
+        )}
+      </div>
     </nav>
   );
 }

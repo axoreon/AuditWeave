@@ -20,6 +20,7 @@ import {
   Search,
   Shield,
   Sparkles,
+  Tag,
   Zap,
 } from "lucide-react";
 import {
@@ -30,6 +31,7 @@ import {
   getCreditSummary,
   getCurrentUser,
   getErrorMessage,
+  getOfferDetails,
   getPaymentHistory,
   isAuthenticated,
   verifyPaymentSignature,
@@ -39,11 +41,15 @@ import type {
   CreditActivityItem,
   CreditPlan,
   CreditSummary,
+  OfferDetailsResponse,
   PaginatedResponse,
   PaymentHistoryItem,
   PaymentStatusFilter,
 } from "@/lib/api";
 import { notifyAuthSessionChanged } from "@/lib/auth/session";
+import { calculateDiscountedPrice, clearActiveOffer, resolveActiveOfferId } from "@/lib/offer";
+import { OfferBanner } from "@/app/components/OfferBanner";
+import { CouponInput } from "@/app/components/CouponInput";
 
 interface RazorpaySuccessResponse {
   razorpay_order_id: string;
@@ -226,6 +232,29 @@ export default function BillingPage() {
   const [paymentQuery, setPaymentQuery] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<PaymentStatusFilter>("all");
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  const [offerDetails, setOfferDetails] = useState<OfferDetailsResponse | null>(null);
+
+  useEffect(() => {
+    const offerId = resolveActiveOfferId();
+    if (!offerId) return;
+    setActiveOfferId(offerId);
+
+    let cancelled = false;
+    void getOfferDetails(offerId)
+      .then((details) => {
+        if (!cancelled && details.active) {
+          setOfferDetails(details);
+        }
+      })
+      .catch((err) => {
+        console.warn("Offer validation notice:", err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const refreshBilling = useCallback(() => {
     setError("");
@@ -544,6 +573,25 @@ export default function BillingPage() {
       </section>}
 
       <section id="credit-packs" className="scroll-mt-24 space-y-7">
+        <OfferBanner
+          offer={offerDetails}
+          onDismiss={() => {
+            clearActiveOffer();
+            setActiveOfferId(null);
+            setOfferDetails(null);
+          }}
+        />
+        <CouponInput
+          activeOffer={offerDetails}
+          onOfferApplied={(details) => {
+            setActiveOfferId(details.id);
+            setOfferDetails(details);
+          }}
+          onOfferRemoved={() => {
+            setActiveOfferId(null);
+            setOfferDetails(null);
+          }}
+        />
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-brand-green">{hasPlanAccess ? "Top up" : "Get started"}</p>
           <h2 className="mt-2 text-2xl font-extrabold text-brand-deep">{hasPlanAccess ? "Choose a Credit Pack" : "Choose your first credit pack"}</h2>
@@ -562,7 +610,29 @@ export default function BillingPage() {
                 {tier.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-green px-4 py-1 text-[10px] font-black uppercase tracking-widest text-white"><Sparkles className="mr-1 inline h-3 w-3" /> Most Popular</div>}
                 <h3 className="text-xl font-extrabold text-brand-deep">{tier.title}</h3>
                 <p className="mt-2 min-h-10 text-xs font-medium leading-5 text-brand-deep/60">{tier.description}</p>
-                <div className="my-6 flex items-end gap-1 text-brand-deep"><IndianRupee className="mb-1 h-7 w-7" /><span className="text-4xl font-black">{tier.price_inr}</span><span className="mb-1 text-xs font-bold text-brand-deep/45">one-time</span></div>
+                {(() => {
+                  const { discountedPrice, savings } = calculateDiscountedPrice(tier.price_inr, offerDetails);
+                  return (
+                    <div className="my-6">
+                      <div className="flex items-end gap-1 text-brand-deep">
+                        <IndianRupee className="mb-1 h-7 w-7" />
+                        <span className="text-4xl font-black">{savings > 0 ? discountedPrice : tier.price_inr}</span>
+                        <span className="mb-1 text-xs font-bold text-brand-deep/45">one-time</span>
+                        {savings > 0 && (
+                          <span className="mb-1 ml-2 text-sm font-semibold text-brand-deep/40 line-through">
+                            ₹{tier.price_inr}
+                          </span>
+                        )}
+                      </div>
+                      {savings > 0 && (
+                        <div className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 text-[11px] font-extrabold text-emerald-800">
+                          <Tag className="h-3 w-3" />
+                          <span>{offerDetails?.percent_off ? `${offerDetails.percent_off}% OFF Applied` : "Offer Applied"}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
                 <ul className="mb-7 flex-1 space-y-3">{tier.features.map((feature) => <li key={feature} className="flex gap-2 text-sm font-semibold text-brand-deep/75"><CheckCircle2 className="h-5 w-5 shrink-0 text-brand-green" />{feature}</li>)}</ul>
                 <button
                   type="button"

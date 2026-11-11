@@ -337,6 +337,18 @@ class CreateOrderRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     plan_id: str = Field(min_length=1, max_length=40)
+    offer_id: Optional[str] = Field(default=None, max_length=60)
+
+
+class OfferResponse(BaseModel):
+    id: str
+    title: str
+    description: Optional[str] = None
+    percent_off: Optional[float] = None
+    flat_amount_off: Optional[int] = None
+    min_amount: Optional[int] = None
+    valid_till: Optional[str] = None
+    active: bool
 
 
 class VerifyPaymentRequest(BaseModel):

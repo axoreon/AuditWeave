@@ -7,8 +7,11 @@ const PUBLIC_PATHS = new Set([
   "/reset-password",
   "/pricing",
   "/contact",
+  "/docs",
   "/docs/privacy",
   "/docs/terms",
+  "/docs/security",
+  "/docs/api",
 ]);
 
 const APP_SHELL_HIDDEN_PATHS = new Set([
@@ -20,8 +23,11 @@ const APP_SHELL_HIDDEN_PATHS = new Set([
   "/reset-password",
   "/pricing",
   "/contact",
+  "/docs",
   "/docs/privacy",
   "/docs/terms",
+  "/docs/security",
+  "/docs/api",
 ]);
 
 export function isPublicPath(pathname: string): boolean {

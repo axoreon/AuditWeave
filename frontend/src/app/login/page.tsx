@@ -85,16 +85,17 @@ export default function LoginPage() {
 
           <div className="auth-card flex flex-col justify-center rounded-[28px] p-6 sm:p-8 [@media(max-height:700px)]:p-6">
             
-            {/* Header */}
+            {/* Header - PSYCHOLOGY: 5-Second Clarity Test + Loss Aversion Framing */}
             <div className="mb-6 [@media(max-height:700px)]:mb-4">
               <div className="auth-kicker mb-4 inline-flex items-center space-x-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-3.5 py-1.5">
-                <span className="text-[10px] font-extrabold text-brand-green uppercase tracking-widest">AuditWeave Portal</span>
+                <Shield className="h-3 w-3 text-brand-green" />
+                <span className="text-[10px] font-extrabold text-brand-green uppercase tracking-widest">Secure Compliance Portal</span>
               </div>
-              <h1 className="mb-1 text-[2.25rem] font-extrabold leading-tight tracking-[-0.04em] text-brand-deep [@media(max-height:700px)]:text-[2rem]">
-                Welcome back
+              <h1 className="mb-2 text-[2.25rem] font-extrabold leading-tight tracking-[-0.04em] text-brand-deep [@media(max-height:700px)]:text-[2rem]">
+                Continue Protecting Your Business
               </h1>
-              <p className="text-[13px] text-brand-deep/60 font-medium">
-                Log in to manage your DPDP Act 2023 compliance and AI privacy audits.
+              <p className="text-[14px] text-brand-deep/70 font-medium leading-relaxed">
+                Access your compliance dashboard to avoid ₹250 Cr DPDP Act penalties and maintain audit readiness.
               </p>
             </div>
 

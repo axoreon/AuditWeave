@@ -52,7 +52,7 @@
 
 ### **AI & Statutory Compliance Engine**
 - **Statutory Knowledge Base**: Grounded in official **DPDP Act 2023 PDF** (`backend/app/knowledge_base/DPDP_Act_2023.pdf`) via RAG text chunking & keyword overlap retrieval.
-- **AI Engine**: Google Gemini API (`google.generativeai`) with high-fidelity GRC mock engine fallback.
+- **AI Engine**: Advanced AI API with high-fidelity GRC mock engine fallback.
 - **Rule Engine**: 11-Pillar Hybrid Compliance Engine (`rule_engine.py`) covering all DPDP Act statutory mandates.
 
 ### **PDF Report Generator**
@@ -89,7 +89,7 @@ AuditWeave - AI/
 │   │   │   ├── DPDP_Act_2023.pdf
 │   │   │   └── dpdp_chunks.json
 │   │   ├── services/             # Core Business Logic & AI Engines
-│   │   │   ├── gemini.py         # AI Copilot & Analysis Engine
+│   │   │   ├── gemini.py         # AI Analysis & Copilot Engine
 │   │   │   ├── parser.py         # Document & Web URL Parser
 │   │   │   ├── pdf_generator.py  # ReportLab PDF Generator
 │   │   │   ├── retrieval.py     # RAG Retrieval Engine for DPDP PDF
@@ -166,9 +166,9 @@ cd AuditWeave-ai
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file inside `backend/` (optional for Gemini API key):
+4. Create a `.env` file inside `backend/` (optional for AI API key):
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
+   AI_API_KEY=your_ai_api_key_here
    DATABASE_URL=sqlite:///./AuditWeave.db
    SECRET_KEY=your_jwt_secret_key_here
    ```

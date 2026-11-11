@@ -521,10 +521,32 @@ export async function getPaymentHistory(params: {
   return request<PaginatedResponse<PaymentHistoryItem>>(`/payments/history?${query}`);
 }
 
-export async function createPaymentOrder(planId: string): Promise<PaymentOrderResponse> {
+export interface OfferDetailsResponse {
+  id: string;
+  title: string;
+  description?: string;
+  percent_off?: number;
+  flat_amount_off?: number;
+  min_amount?: number;
+  valid_till?: string;
+  active: boolean;
+}
+
+export async function getOfferDetails(offerId: string): Promise<OfferDetailsResponse> {
+  return request<OfferDetailsResponse>(`/payments/offers/${encodeURIComponent(offerId)}`);
+}
+
+export async function createPaymentOrder(
+  planId: string,
+  offerId?: string | null,
+): Promise<PaymentOrderResponse> {
+  const payload: { plan_id: string; offer_id?: string } = { plan_id: planId };
+  if (offerId) {
+    payload.offer_id = offerId;
+  }
   return request<PaymentOrderResponse>("/payments/create-order", {
     method: "POST",
-    body: JSON.stringify({ plan_id: planId }),
+    body: JSON.stringify(payload),
   });
 }
 

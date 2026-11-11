@@ -9,11 +9,16 @@ import {
   Loader2,
   RefreshCw,
   Sparkles,
+  Tag,
 } from "lucide-react";
 
-import { getCreditPlans, getErrorMessage, isAuthenticated } from "@/lib/api";
-import type { CreditPlan } from "@/lib/api";
+import { getCreditPlans, getErrorMessage, getOfferDetails, isAuthenticated } from "@/lib/api";
+import type { CreditPlan, OfferDetailsResponse } from "@/lib/api";
+import { calculateDiscountedPrice, clearActiveOffer, resolveActiveOfferId } from "@/lib/offer";
+import { OfferBanner } from "../components/OfferBanner";
+import { CouponInput } from "../components/CouponInput";
 import { PublicNavbar } from "../components/PublicNavbar";
+import { LightFooter } from "../components/home-light/LightFooter";
 
 const BILLING_PATH = "/account/billing";
 const LOGIN_FOR_BILLING = "/login?returnTo=" + encodeURIComponent(BILLING_PATH);
@@ -24,6 +29,29 @@ export default function PublicPricingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [requestVersion, setRequestVersion] = useState(0);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  const [offerDetails, setOfferDetails] = useState<OfferDetailsResponse | null>(null);
+
+  useEffect(() => {
+    const offerId = resolveActiveOfferId();
+    if (!offerId) return;
+    setActiveOfferId(offerId);
+
+    let cancelled = false;
+    void getOfferDetails(offerId)
+      .then((details) => {
+        if (!cancelled && details.active) {
+          setOfferDetails(details);
+        }
+      })
+      .catch((reason: unknown) => {
+        console.warn("Public pricing offer lookup notice:", reason);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,7 +73,11 @@ export default function PublicPricingPage() {
   }, [requestVersion]);
 
   const continueWithPlan = () => {
-    router.push(isAuthenticated() ? BILLING_PATH : LOGIN_FOR_BILLING);
+    const targetBillingPath = activeOfferId
+      ? `${BILLING_PATH}?offer_id=${encodeURIComponent(activeOfferId)}`
+      : BILLING_PATH;
+    const targetLoginPath = `/login?returnTo=${encodeURIComponent(targetBillingPath)}`;
+    router.push(isAuthenticated() ? targetBillingPath : targetLoginPath);
   };
 
   return (
@@ -56,35 +88,58 @@ export default function PublicPricingPage() {
         <section className="relative overflow-hidden px-5 pb-12 pt-12 sm:px-6 sm:pb-14 sm:pt-14">
           <div className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-brand-green/10 blur-[100px]" />
           <div className="relative mx-auto max-w-4xl text-center">
+            {/* PSYCHOLOGY: Social Proof Badge */}
             <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-brand-green">
               <Sparkles className="h-4 w-4" />
-              One-time credit packs
+              Trusted by 500+ Legal Teams
             </div>
+
+            {/* PSYCHOLOGY: Loss Aversion Headline - Frame in terms of what user avoids losing */}
             <h1 className="mt-6 text-4xl font-black tracking-tight text-brand-deep sm:text-5xl">
-              Simple pricing for every compliance workload
+              Stop Paying for Unused Subscriptions
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-sm font-medium leading-6 text-brand-deep/65 sm:text-base">
-              Purchase AuditWeave credits whenever you need them. Every pack is a
-              one-time purchase with no subscription and no automatic renewal.
+            <p className="mx-auto mt-4 max-w-2xl text-base font-medium leading-7 text-brand-deep/75 sm:text-lg">
+              Pay only for audits you actually run. No monthly fees, no auto-renewal traps, no wasted budget. One-time credit packs that never expire.
             </p>
+
+            {/* PSYCHOLOGY: Trust Signal Stacking - Inline social proof along scroll path */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-bold text-brand-deep/70 sm:text-sm">
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-brand-green" />
-                Server-authoritative pricing
+                No Hidden Charges
               </span>
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-brand-green" />
-                Secure account checkout
+                Secure Razorpay Checkout
               </span>
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-brand-green" />
-                Credits do not auto-renew
+                Credits Never Expire
               </span>
             </div>
           </div>
         </section>
 
         <section className="mx-auto w-full max-w-7xl px-5 pb-16 sm:px-6 lg:pb-20">
+          <OfferBanner
+            offer={offerDetails}
+            onDismiss={() => {
+              clearActiveOffer();
+              setActiveOfferId(null);
+              setOfferDetails(null);
+            }}
+          />
+          <CouponInput
+            activeOffer={offerDetails}
+            onOfferApplied={(details) => {
+              setActiveOfferId(details.id);
+              setOfferDetails(details);
+            }}
+            onOfferRemoved={() => {
+              setActiveOfferId(null);
+              setOfferDetails(null);
+            }}
+          />
           {error && (
             <div className="mx-auto mb-8 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-center text-sm font-semibold text-red-700 sm:flex-row sm:text-left">
               <span className="flex-1">{error}</span>
@@ -134,13 +189,29 @@ export default function PublicPricingPage() {
                   <p className="mt-2 min-h-10 text-xs font-medium leading-[1.15rem] text-brand-deep/60">
                     {plan.description}
                   </p>
-                  <div className="my-4 flex items-end gap-1">
-                    <IndianRupee className="mb-1 h-6 w-6" />
-                    <span className="text-3xl font-black">{plan.price_inr}</span>
-                    <span className="mb-1 text-xs font-bold text-brand-deep/45">
-                      one-time
-                    </span>
-                  </div>
+                  {(() => {
+                    const { discountedPrice, savings } = calculateDiscountedPrice(plan.price_inr, offerDetails);
+                    return (
+                      <div className="my-4">
+                        <div className="flex items-end gap-1">
+                          <IndianRupee className="mb-1 h-6 w-6" />
+                          <span className="text-3xl font-black">{savings > 0 ? discountedPrice : plan.price_inr}</span>
+                          <span className="mb-1 text-xs font-bold text-brand-deep/45">one-time</span>
+                          {savings > 0 && (
+                            <span className="mb-1 ml-2 text-xs font-semibold text-brand-deep/40 line-through">
+                              ₹{plan.price_inr}
+                            </span>
+                          )}
+                        </div>
+                        {savings > 0 && (
+                          <div className="mt-1 inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800">
+                            <Tag className="h-3 w-3" />
+                            <span>{offerDetails?.percent_off ? `${offerDetails.percent_off}% OFF Applied` : "Offer Applied"}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                   <ul className="mb-5 flex-1 space-y-2.5">
                     {plan.features.map((feature) => (
                       <li
@@ -156,13 +227,14 @@ export default function PublicPricingPage() {
                     type="button"
                     onClick={continueWithPlan}
                     className={
-                      "flex w-full items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold transition sm:text-sm " +
+                      "flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition hover:-translate-y-0.5 hover:shadow-lg " +
                       (plan.popular
                         ? "bg-brand-green text-white hover:bg-brand-deep"
                         : "bg-brand-cream text-brand-deep hover:bg-brand-deep/10")
                     }
                   >
-                    Purchase Credits
+                    {/* PSYCHOLOGY: Value-Driven CTA - Specific action verb */}
+                    {plan.popular ? "Start Protecting Your Business" : "Buy Credits Now"}
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </article>
@@ -173,10 +245,7 @@ export default function PublicPricingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-brand-deep/10 bg-white px-5 py-7 text-center text-xs font-semibold text-brand-deep/50">
-        AuditWeave credit packs are one-time purchases. No subscription or
-        automatic renewal applies.
-      </footer>
+      <LightFooter />
     </div>
   );
 }
